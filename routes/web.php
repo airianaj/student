@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\StudentController;
+//use Illuminate\Support\Facades\Route;
+//use App\Http\Controllers\StudentController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,6 +22,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Auth::routes();
+//Route::resource('student', StudentController::class);
 
-Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/students','App\Http\Controllers\StudentController@index')->name('students.index');
+Route::get('/student',[StudentController::class, 'index'])->name('students.index');
