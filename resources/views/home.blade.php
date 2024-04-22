@@ -15,7 +15,23 @@
                     @endif
 
                     You are logged in!<br>
-                    学生一覧<br>学生追加
+
+
+                    <div class="border col-12">
+                        <div class="row">
+                            <div class="col-md">
+                                <br>
+                                <button type="button" class="btn btn-outline-primary btn-block" onclick="location.href='{{ route('students.index') }}'">学生一覧</button>
+                                <button type="button" class="btn btn-outline-primary btn-block" onclick="location.href='{{ route('student.create') }}'">学生追加</button>
+                                <button type="button" class="btn btn-outline-primary btn-block" onclick="location.href='{{ route('students.index') }}'">学年更新（リンク未設定）</button>
+                            </div>
+                        </div>
+
+                        <br>
+                    </div>
+                    
+
+
                 </div>
             </div>
         </div>

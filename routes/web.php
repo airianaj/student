@@ -22,7 +22,11 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-//Route::resource('student', StudentController::class);
 
-//Route::get('/students','App\Http\Controllers\StudentController@index')->name('students.index');
-Route::get('/student',[StudentController::class, 'index'])->name('students.index');
+Route::get('/students',[StudentController::class, 'index'])->name('students.index');
+
+Route::get('/students/create', [StudentController::class, 'create'])->name('student.create');
+Route::post('/students/store/', [StudentController::class, 'store'])->name('student.store');
+
+Route::get('/students/edit/{student}', [StudentController::class, 'edit'])->name('student.edit');
+Route::put('/students/edit/{student}',[StudentController::class, 'update'])->name('student.update');

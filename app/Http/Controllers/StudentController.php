@@ -12,11 +12,12 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $students = Student::latest()->paginate(5);
-        return view('index', compact('students'))
-        -> with('i',(request()->input('page',1)-1)*5);
+        $query = \App\Student::query();
+  // 全件取得 +ページネーション
+  $students = $query->orderBy('id','desc')->paginate(10);
+  return view('index')->with('students',$students);
     }
 
     /**
@@ -26,7 +27,7 @@ class StudentController extends Controller
      */
     public function create()
     {
-        return view(‘create’);
+        return view('create');
     }
 
     /**
@@ -37,7 +38,25 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([   
+            'grade'=> 'required|integer',
+            'name' => 'required|max:20',
+            'addres' => 'required|max:50',
+            //'img_path' => 'required',
+            'comment' => 'required|max:140',
+        ]);
+    
+        
+
+        $student = new Student;
+            $student->grade = $request->input("grade");
+            $student->name = $request->input("name");
+            $student->addres = $request->input("addres");
+            $student->comment = $request->input("comment");
+            $student->img_path = $request->input("img_path");
+            $student->save();
+
+            return redirect()->route('students.index')->with("success", '登録しました');
     }
 
     /**
@@ -48,7 +67,9 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        //
+        $studenss = Student::all();
+        return view('edit',compact('student'))
+        ->with('students',$students);
     }
 
     /**
