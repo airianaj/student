@@ -15,9 +15,11 @@ class StudentController extends Controller
     public function index(Request $request)
     {
         $query = \App\Student::query();
-  // 全件取得 +ページネーション
-  $students = $query->orderBy('id','desc')->paginate(10);
-  return view('index')->with('students',$students);
+        // 全件取得 +ページネーション
+        $students = $query->orderBy('id','desc')->paginate(10);
+        return view('index')
+        ->with ('page_id',request()->page)
+        ->with('students',$students);
     }
 
     /**
@@ -67,9 +69,9 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        $studenss = Student::all();
-        return view('edit',compact('student'))
-        ->with('students',$students);
+        $students = Student::all();
+        return view('show',compact('student'))
+        ->with ('page_id',request()->page);
     }
 
     /**
@@ -80,7 +82,8 @@ class StudentController extends Controller
      */
     public function edit(Student $student)
     {
-        //
+        $studets = Student::all();
+        return view('edit',compact('student'));
     }
 
     /**
@@ -92,7 +95,23 @@ class StudentController extends Controller
      */
     public function update(Request $request, Student $student)
     {
-        //
+        $request->validate([   
+            'grade'=> 'required|integer',
+            'name' => 'required|max:20',
+            'addres' => 'required|max:50',
+            //'img_path' => 'required',
+            'comment' => 'required|max:140',
+        ]);
+    
+        
+            $student->grade = $request->input("grade");
+            $student->name = $request->input("name");
+            $student->addres = $request->input("addres");
+            $student->comment = $request->input("comment");
+            $student->img_path = $request->input("img_path");
+            $student->save();
+
+            return redirect()->route('students.index')->with("success", '登録しました');
     }
 
     /**
@@ -103,6 +122,8 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        //
+        $student->delete();
+        return redirect()->route('students.index')
+        ->with('success','学生'.$student->name.'を削除しました');
     }
 }

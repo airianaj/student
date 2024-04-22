@@ -31,6 +31,11 @@
         </div>
     </div>
     <table class="table table-bordered">
+
+        @if ($message = Session::get('success'))
+        <div class="alert alert-success mt-1"><p>{{ $message }}</p></div>
+        @endif
+        
         <tr>
             <th>No</th>
             <th>grade</th>
@@ -50,7 +55,7 @@
             <td style="text-align:right">{{ $student->comment }}</td>
             <td style="width: 20%;"> <img src="{{ Storage::url($student->img_path) }}" alt="" class="img-fluid" width="85"></td> -->
             <td style="text-align:center">
-                <a href="" class="btn btn-primary btn-sm">詳細</a>
+                <a class="btn btn-primary btn-sm" href="{{ route('student.show',$student->id) }} ?page={{ $page_id }}">詳細</a>
             </td>
         </tr>
         @endforeach
