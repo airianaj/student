@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <!-- 検索フォーム -->
+    <!-- 検索フォーム 
     <div class="row" style="padding-bottom: 30px; margin-left: 0px; margin-right: 15px;">
         <div class="col-sm-10" style="padding-left:0; margin-top: 15px;">
             <form method="get" action="" class="form-inline">
@@ -29,7 +29,7 @@
                 </div>
             </form>
         </div>
-    </div>
+    </div>-->
     <table class="table table-bordered">
 
         @if ($message = Session::get('success'))

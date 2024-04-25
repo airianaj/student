@@ -7,10 +7,14 @@
             <h2 style="font-size:1rem;">学生登録画面</h2>
         </div>
         <div class="pull-right">
-            <a class="btn btn-success" href="{{ url('/students') }}">戻る</a>
+            <a class="btn btn-success" href="{{ url('/home') }}">戻る</a>
         </div>
     </div>
 </div>
+
+@if ($message = Session::get('success'))
+        <div class="alert alert-success mt-1"><p>{{ $message }}</p></div>
+        @endif
  
 <div style="text-align:left;">
 <form action="{{ route('student.store') }}" method="POST"　enctype="multipart/form-data">

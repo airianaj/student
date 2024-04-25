@@ -58,7 +58,7 @@ class StudentController extends Controller
             $student->img_path = $request->input("img_path");
             $student->save();
 
-            return redirect()->route('students.index')->with("success", '登録しました');
+            return redirect()->route('student.create')->with("success", '登録しました');
     }
 
     /**
@@ -111,7 +111,7 @@ class StudentController extends Controller
             $student->img_path = $request->input("img_path");
             $student->save();
 
-            return redirect()->route('students.index')->with("success", '登録しました');
+            return redirect()->route('student.edit',compact('student'))->with("success", '更新しました');
     }
 
     /**
