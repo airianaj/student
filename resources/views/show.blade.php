@@ -44,6 +44,8 @@
         </div>            
     </div>
 
+
+
     
     <div class="ml-2">
         <div class="row">
@@ -53,7 +55,7 @@
             </div>
 
             <div>
-                <a class="btn btn-outline-primary" style="margin:0px 10px;" href="{{ url('student.edit',$student->id) }}">成績追加</a>
+                <a class="btn btn-outline-primary" style="margin:0px 10px;" href="{{ route('school_grade.create',$student->id) }}">成績追加</a>
             </div>
 
             <div>

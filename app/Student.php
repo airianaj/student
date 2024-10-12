@@ -13,4 +13,8 @@ class Student extends Model
         'img_path',
         'comment',
     ];
+
+    public function school_grades() {
+        return $this->hasMany(School_grade::class);
+    }
 }
