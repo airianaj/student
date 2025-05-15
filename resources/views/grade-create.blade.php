@@ -19,7 +19,29 @@
 <div style="text-align:left;">
 <form action="{{ route('school_grade.store') }}" method="POST"　enctype="multipart/form-data">
     @csrf
-     
+<!--
+    <div class="col-12 mb-2 mt-2">
+        <div class="form-group">
+            <label for="student_id">学生ID:</label>
+            <select name="student_id" id="student_id" class="form-control">
+                <option value="">-- 学生を選択してください --</option>
+                @foreach ($students as $student)
+                    <option value="{{ $student->id }}" {{ old('student_id') == $student->id ? 'selected' : '' }}>
+                        {{ $student->name }} (ID: {{ $student->id }})
+                    </option>
+                @endforeach
+            </select>
+            @error('student_id')
+                <span style="color:red;">学生IDを選択してください</span>
+            @enderror
+        </div>
+    </div>
+-->
+
+<!-- student_id を hidden フィールドで送信 -->
+<input type="hidden" name="student_id" value="{{ $student->id }}">
+
+
      <div class="row">
 
         <div class="col-12 mb-2 mt-2">
@@ -65,11 +87,19 @@
                         @endforeach
                     </select>
                     @error('term')
-                <span style="color:red;">学期を入力してください</span>
-                @enderror
+                    <span style="color:red;">成績を選択してください</span>
+                    @enderror
                 </div>
             @endforeach
             </div>
+
+            @if ($errors->any())
+    <ul>
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+@endif
         </div>
         
         <div class="col-12 mb-2 mt-2">

@@ -36,7 +36,7 @@ Route::get('/students/show/{student}', [StudentController::class, 'show'])->name
 
 Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('student.destroy');
 
-Route::get('/school_grade/create', [School_gradeController::class, 'create'])->name('school_grade.create');
+Route::get('/school_grade/create/', [School_gradeController::class, 'create'])->name('school_grade.create');
 Route::post('/school_grade/store', [School_gradeController::class, 'store'])->name('school_grade.store');
 
 Route::get('/school_grade/show', [School_gradeController::class, 'show'])->name('school_grade.show');

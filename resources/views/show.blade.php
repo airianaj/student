@@ -40,11 +40,51 @@
 
     <div class="col-12 mb-2 mt-2">
         <div class="form-group">
-        {{ $student->img_path }}    
+            @if($student->img_path)
+            <img src="{{ asset('images/' . $student->img_path) }}" alt="{{ $student->name }}" width="100" height="100">
+        @else
+            <img src="{{ asset('images/') }}" alt="No Image" width="100" height="100">
+        @endif  
         </div>            
     </div>
 
 
+    <!-- 成績の表示 -->
+    <div class="col-12 mb-2 mt-2">
+        <h3>成績</h3>
+        <table border="1" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>学期</th>
+                    <th>国語</th>
+                    <th>数学</th>
+                    <th>理科</th>
+                    <th>社会</th>
+                    <th>音楽</th>
+                    <th>家庭科</th>
+                    <th>英語</th>
+                    <th>美術</th>
+                    <th>保健体育</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($student->school_grades as $grade)
+                    <tr>
+                        <td>{{ $grade->term }}</td>
+                        <td>{{ $grade->japanese }}</td>
+                        <td>{{ $grade->math }}</td>
+                        <td>{{ $grade->science }}</td>
+                        <td>{{ $grade->social_studies }}</td>
+                        <td>{{ $grade->music }}</td>
+                        <td>{{ $grade->home_economics }}</td>
+                        <td>{{ $grade->english }}</td>
+                        <td>{{ $grade->art }}</td>
+                        <td>{{ $grade->health_and_physical_education }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 
     
     <div class="ml-2">

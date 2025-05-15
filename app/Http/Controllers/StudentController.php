@@ -14,12 +14,11 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
-        $query = \App\Student::query();
-        // 全件取得 +ページネーション
-        $students = $query->orderBy('id','desc')->paginate(10);
+        $students = Student::getAllStudents(10);
+
         return view('index')
-        ->with ('page_id',request()->page)
-        ->with('students',$students);
+            ->with('page_id', request()->page)
+            ->with('students', $students);
     }
 
     /**
@@ -40,25 +39,25 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([   
-            'grade'=> 'required|integer',
+        $data = $request->validate([
+            'grade' => 'required|integer',
             'name' => 'required|max:20',
             'addres' => 'required|max:50',
-            //'img_path' => 'required',
             'comment' => 'required|max:140',
+            'img_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-    
-        
 
-        $student = new Student;
-            $student->grade = $request->input("grade");
-            $student->name = $request->input("name");
-            $student->addres = $request->input("addres");
-            $student->comment = $request->input("comment");
-            $student->img_path = $request->input("img_path");
-            $student->save();
+        // 画像ファイルを保存
+        if ($request->hasFile('img_path')) {
+        // storage/app/public/images に画像を保存し、パスを取得
+        $imagePath = $request->file('img_path')->store('images', 'public');
+        $data['img_path'] = $imagePath;
+        }
 
-            return redirect()->route('student.create')->with("success", '登録しました');
+        // モデルを使って学生データを作成
+        Student::createStudent($data);
+
+        return redirect()->route('student.create')->with("success", '登録しました');
     }
 
     /**
@@ -69,9 +68,8 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        $students = Student::all();
-        return view('show',compact('student'))
-        ->with ('page_id',request()->page);
+        return view('show', compact('student'))
+            ->with('page_id', request()->page);
     }
 
     /**
@@ -82,8 +80,7 @@ class StudentController extends Controller
      */
     public function edit(Student $student)
     {
-        $studets = Student::all();
-        return view('edit',compact('student'));
+        return view('edit', compact('student'));
     }
 
     /**
@@ -95,23 +92,18 @@ class StudentController extends Controller
      */
     public function update(Request $request, Student $student)
     {
-        $request->validate([   
-            'grade'=> 'required|integer',
+        $data = $request->validate([
+            'grade' => 'required|integer',
             'name' => 'required|max:20',
             'addres' => 'required|max:50',
-            //'img_path' => 'required',
             'comment' => 'required|max:140',
+            'img_path' => 'required',
         ]);
-    
-        
-            $student->grade = $request->input("grade");
-            $student->name = $request->input("name");
-            $student->addres = $request->input("addres");
-            $student->comment = $request->input("comment");
-            $student->img_path = $request->input("img_path");
-            $student->save();
 
-            return redirect()->route('student.edit',compact('student'))->with("success", '更新しました');
+        // モデルのインスタンスを使って更新
+        $student->updateStudent($data);
+
+        return redirect()->route('student.edit', compact('student'))->with("success", '更新しました');
     }
 
     /**
@@ -124,6 +116,6 @@ class StudentController extends Controller
     {
         $student->delete();
         return redirect()->route('students.index')
-        ->with('success','学生'.$student->name.'を削除しました');
+            ->with('success', '学生' . $student->name . 'を削除しました');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\School_grade;
+use App\Student;
 use Illuminate\Http\Request;
 
 class School_gradeController extends Controller
@@ -14,8 +15,9 @@ class School_gradeController extends Controller
      */
     public function index()
     {
-        $school_grades = School_grade::All();
-        return view('School_grade.index', ['school_grades' => $school_grades]);
+        $school_grades = School_grade::getAllGrades();
+        $school_grades = School_grade::with('student')->get();
+        return view('school_grade.index', ['school_grades' => $school_grades]);
     }
 
     /**
@@ -25,7 +27,10 @@ class School_gradeController extends Controller
      */
     public function create()
     {
-        return view('grade-create');
+        $students = Student::all(); 
+        //$student = Student::findOrFail($studentId);
+        return view('grade-create', ['students' => $students]);
+        
     }
 
     /**
@@ -37,38 +42,44 @@ class School_gradeController extends Controller
     public function store(Request $request)
     {
 
-            $request->validate([
-                'student_id' => 'required|exists:students,id',
-                'grade' => 'required|string|max:10',
-                'term' => 'required|string|max:10',
-                'japanese' => 'required|string|in:A,B,C,D,F',
-                'math' => 'required|string|in:A,B,C,D,F',
-                'science' => 'required|string|in:A,B,C,D,F',
-                'social_studies' => 'required|string|in:A,B,C,D,F',
-                'music' => 'required|string|in:A,B,C,D,F',
-                'home_economics' => 'required|string|in:A,B,C,D,F',
-                'english' => 'required|string|in:A,B,C,D,F',
-                'art' => 'required|string|in:A,B,C,D,F',
-                'health_and_physical_education' => 'required|string|in:A,B,C,D,F',
-            ]);
+        $data = $request->validate([
+            'student_id' => 'required|exists:students,id',
+            'grade' => 'required|string|max:10',
+            'term' => 'required|string|max:10',
+            'japanese' => 'required|string|in:A,B,C,D,F',
+            'math' => 'required|string|in:A,B,C,D,F',
+            'science' => 'required|string|in:A,B,C,D,F',
+            'social_studies' => 'required|string|in:A,B,C,D,F',
+            'music' => 'required|string|in:A,B,C,D,F',
+            'home_economics' => 'required|string|in:A,B,C,D,F',
+            'english' => 'required|string|in:A,B,C,D,F',
+            'art' => 'required|string|in:A,B,C,D,F',
+            'health_and_physical_education' => 'required|string|in:A,B,C,D,F',
+        ]);
+    
 
-            $school_grade = new School_grade;
-            $school_grade->student_id = $request->input('student_id');
-            $school_grade ->grade = $request->input("grade");
-            $school_grade ->term = $request->input("term");
-            $school_grade ->japanese = $request->input("japanese");
-            $school_grade ->math = $request->input("math");
-            $school_grade ->science = $request->input("science");
-            $school_grade ->social_studies = $request->input("math");
-            $school_grade ->music = $request->input("music");
-            $school_grade ->home_economics = $request->input("home_economics");
-            $school_grade ->english = $request->input("english");
-            $school_grade ->art = $request->input("art");
-            $school_grade ->health_and_physical_education = $request->input("health_and_physical_education");
-            $school_grade ->save();
+        
+        // クエリログを有効化
+    //DB::enableQueryLog();
 
-            return redirect()->route('school_grade.create')->with("success", '登録しました');
+    //try {
+
+        //$data['student_id'] = Auth::user()->student_id;
+
+        // モデルで成績データを新規作成
+        $school_grades = School_grade::createGrade($data);
+
+        //dump(DB::getQueryLog());
+    //} catch (\Exception $e) {
+        // エラー処理
+        //\Log::error('保存エラー: ' . $e->getMessage());
+        //return back()->withErrors('データの保存中にエラーが発生しました。')->withInput();
+    //}
+        return redirect()->route('school_grade.create', ['studentId' => $data['student_id']])->with("success", '登録しました');
+
+        //dd($schoolGrade);
     }
+
 
     /**
      * Display the specified resource.
@@ -78,8 +89,10 @@ class School_gradeController extends Controller
      */
     public function show($id)
     {
-        $students = Student::all();
-        return view('show',compact('school_grade'));
+        // モデルで特定IDの成績データを取得
+        $school_grade = School_grade::getGradeById($id);
+
+        return view('school_grade.show', compact('school_grade'));
     }
 
     /**
@@ -90,7 +103,8 @@ class School_gradeController extends Controller
      */
     public function edit($id)
     {
-        //
+        $school_grade = School_grade::getGradeById($id);
+        return view('school_grade.edit', compact('school_grade'));
     }
 
     /**
@@ -102,8 +116,27 @@ class School_gradeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->validate([
+            'student_id' => 'required|exists:students,id',
+            'grade' => 'required|string|max:10',
+            'term' => 'required|string|max:10',
+            'japanese' => 'required|string|in:A,B,C,D,F',
+            'math' => 'required|string|in:A,B,C,D,F',
+            'science' => 'required|string|in:A,B,C,D,F',
+            'social_studies' => 'required|string|in:A,B,C,D,F',
+            'music' => 'required|string|in:A,B,C,D,F',
+            'home_economics' => 'required|string|in:A,B,C,D,F',
+            'english' => 'required|string|in:A,B,C,D,F',
+            'art' => 'required|string|in:A,B,C,D,F',
+            'health_and_physical_education' => 'required|string|in:A,B,C,D,F',
+        ]);
+
+        // モデルで成績データを新規作成
+        School_grade::createGrade($data);
+
+        return redirect()->route('grade-create')->with("success", '更新しました');
     }
+    
 
     /**
      * Remove the specified resource from storage.
@@ -113,6 +146,9 @@ class School_gradeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $school_grade = School_grade::getGradeById($id);
+        $school_grade->delete();
+
+        return redirect()->route('school_grade.index')->with("success", '削除しました');
     }
 }
